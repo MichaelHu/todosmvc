@@ -1,0 +1,6 @@
+__inline("./rocket.init.js")
+__inline("./rocket.router.todosmvc.js")
+__inline("../page/index/js/model/rocket.collection.todolist.js")
+__inline("../page/index/js/model/rocket.model.todo.js")
+__inline("../page/index/js/view/rocket.pageview.index.js")
+__inline("../page/index/js/view/rocket.subview.todo.js")
