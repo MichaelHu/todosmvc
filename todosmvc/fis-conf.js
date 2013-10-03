@@ -10,7 +10,7 @@ fis.config.merge({
                 release : "/static$&"
             },
             {
-                reg : /^\/.+\.(css|js|png|gif|jpg|jpeg)$/i,
+                reg : /^\/.+\.(png|gif|jpg|jpeg)$/i,
                 release : "/static$&"
             },
             {

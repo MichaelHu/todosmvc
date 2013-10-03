@@ -11,13 +11,14 @@ rocket.pageview.index = rocket.pageview.extend({
 
     // Delegated events for creating new items, and clearing completed ones.
     ,events: {
-      "keypress #new-todo":  "createOnEnter",
-      "click #clear-completed": "clearCompleted",
-      "click #toggle-all": "toggleAllComplete"
+        "keypress #new-todo":  "createOnEnter",
+        "click #clear-completed": "clearCompleted",
+        "click #toggle-all": "toggleAllComplete"
     }
 
     ,init: function(options){
-        var me = this;
+        var me = this, 
+            todos;
 
         me.input = me.$("#new-todo");
         me.allCheckbox = me.$("#toggle-all")[0];
@@ -25,14 +26,13 @@ rocket.pageview.index = rocket.pageview.extend({
         me.footer = me.$('footer');
         me.main = $('#main');
 
-        me.collection = new rocket.collection.todolist(
-            []
-            ,{
-                model: rocket.model.todo
-            }
-        );
-
-        console.log(me.collection.model);
+        todos = me.collection 
+            = new rocket.collection.todolist(
+                null 
+                ,{
+                    model: rocket.model.todo
+                }
+            );
 
         me.hideLoading(-1);
     }
@@ -40,11 +40,27 @@ rocket.pageview.index = rocket.pageview.extend({
     ,registerEvents: function(){
         var me = this,
             ec = me.ec,
-            keydownLocking = false;
+            todos = me.collection;
 
-        me.listenTo(me.collection, 'add', me.addOne);
-        me.listenTo(me.collection, 'reset', me.addAll);
-        me.listenTo(me.collection, 'all', me.render);
+        me.listenTo(todos, 'add', me.addOne);
+        me.listenTo(todos, 'reset', me.addAll);
+        me.listenTo(todos, 'all', me.render);
+
+        ec.on('pagebeforechange', me.onpagebeforechange, me);
+    }
+
+    ,onpagebeforechange: function(params){
+        var me = this,
+            from = params.from,
+            to = params.to,
+            param = params.params,
+            
+            todos = me.collection;
+
+        if(to == me.ec){
+            // todos.fetch(); 
+            todos.fetch({reset: true}); 
+        }
     }
 
     // Re-rendering the App just means refreshing the statistics -- the rest
@@ -55,7 +71,7 @@ rocket.pageview.index = rocket.pageview.extend({
             done = todos.done().length,
             remaining = todos.remaining().length;
 
-        if (me.collection.length) {
+        if (todos.length) {
             me.main.show();
             me.footer.show();
             me.footer.html(
@@ -85,6 +101,8 @@ rocket.pageview.index = rocket.pageview.extend({
     ,addAll: function() {
         var me = this;
 
+        console.log(arguments);
+
         me.collection.each(me.addOne, me);
     }
 
@@ -96,8 +114,6 @@ rocket.pageview.index = rocket.pageview.extend({
 
         if (e.keyCode != 13) return;
         if (!me.input.val()) return;
-
-        console.log(todos);
 
         todos.create({title: me.input.val()});
         me.input.val('');

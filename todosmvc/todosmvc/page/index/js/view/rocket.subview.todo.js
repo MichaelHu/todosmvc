@@ -10,11 +10,13 @@ rocket.subview.todo = rocket.subview.extend({
 
     // The DOM events specific to an item.
     ,events: {
-        "click .toggle"   : "toggleDone",
-        "dblclick .view"  : "edit",
-        "click a.destroy" : "clear",
-        "keypress .edit"  : "updateOnEnter",
-        "blur .edit"      : "close"
+        'click .toggle'   : 'toggleDone'
+        ,'dblclick .view'  : 'edit'
+        ,'click a.destroy' : 'clear'
+        ,'keypress .edit'  : 'updateOnEnter'
+
+        // "blur", "focus"事件在rocket下不能通过这种方式注册
+        // ,'blur .edit'      : 'close'
     }
 
     ,init: function(options){
@@ -27,6 +29,7 @@ rocket.subview.todo = rocket.subview.extend({
         
         me.listenTo(me.model, 'change', me.render);
         me.listenTo(me.model, 'destroy', me.remove);
+
     }
 
     ,render: function(data){
@@ -35,6 +38,11 @@ rocket.subview.todo = rocket.subview.extend({
         me.$el.html(me.template(me.model.toJSON()));
         me.$el.toggleClass('done', me.model.get('done'));
         me.input = me.$('.edit');
+
+        me.input.on('blur', function(e){
+            me.close(e);
+        });
+
         return me;
     }
 
