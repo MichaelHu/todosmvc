@@ -1,10 +1,10 @@
 (function($){
 
-rocket.pageview.index = rocket.pageview.extend({
+rocket.pageview.todos = rocket.pageview.extend({
 
     // Instead of generating a new element, bind to the existing skeleton of
     // the App already present in the HTML.
-    el: '#index_page'
+    el: '#todos_page'
 
     // Our template for the line of statistics at the bottom of the app.
     ,statsTemplate: _.template($('#stats-template').html())
